@@ -5,14 +5,14 @@ namespace ProyectoEF.Models
 {
     public class Tarea
     {
-        [Key]
-        public Guid TareaId { get; set; }
+        //[Key]
+        public int TareaId { get; set; }
 
-        [ForeignKey("CategoriaId")]
-        public Guid CategoriaId { get; set; }
+        //[ForeignKey("CategoriaId")]
+        public int CategoriaId { get; set; }
 
-        [Required]
-        [MaxLength(200)]
+        //[Required]
+        //[MaxLength(200)]
         public string Titulo { get; set; }
 
         public string Descripcion { get; set; }
@@ -23,7 +23,7 @@ namespace ProyectoEF.Models
 
         public virtual Categoria Categoria { get; set; }
 
-        [NotMapped]
+        //[NotMapped]
         public string Resumen { get; set; }
     }
 

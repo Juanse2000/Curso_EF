@@ -31,4 +31,39 @@ app.MapGet("/dbConexion", async ([FromServices] TareasContext dbContext) =>
     return Results.Ok("Base de datos en memoria: " + dbContext.Database.IsInMemory());
 });
 
+app.MapGet("/api/tareas", async ([FromServices] TareasContext dbContext) =>
+{
+    return Results.Ok(dbContext.Tareas.Include(x => x.Categoria));
+    //return Results.Ok(dbContext.Tareas.Include(x => x.Categoria).Where(x => x.PrioridadTarea == Prioridad.alta));
+});
+
+app.MapPost("/api/AgregarTarea", async ([FromServices] TareasContext dbContext, [FromBody] Tarea tarea) =>
+{
+    tarea.FechaCreacion = DateTime.Now;
+
+    await dbContext.Tareas.AddAsync(tarea);
+    await dbContext.SaveChangesAsync();
+
+    return Results.Ok(dbContext.Tareas);
+});
+
+app.MapPut("/api/ActualizarTarea/{idTarea}", async ([FromServices] TareasContext dbContext, [FromBody] Tarea tarea, [FromRoute] int idTarea) =>
+{
+    var tareaActual = dbContext.Tareas.Find(idTarea);
+
+    if(tareaActual != null)
+    {
+        tareaActual.CategoriaId = tarea.CategoriaId;
+        tareaActual.Titulo = tarea.Titulo;
+        tareaActual.PrioridadTarea = tarea.PrioridadTarea;
+        tareaActual.Descripcion = tarea.Descripcion;
+
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok();
+    }
+
+    return Results.NotFound();
+});
+
 app.Run();
